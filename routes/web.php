@@ -33,6 +33,11 @@ Route::middleware('auth')->group(function () {
     Route::get('suppliers/{supplier}/export', [ImportExportController::class, 'export'])
         ->name('suppliers.export');
 
+    Route::get('suppliers/import/conflicts', [ImportExportController::class, 'showConflicts'])
+    ->name('suppliers.import.conflicts');
+    Route::post('suppliers/import/resolve', [ImportExportController::class, 'resolveConflicts'])
+    ->name('suppliers.import.resolve');
+
     Route::resource('suppliers', SupplierController::class);
     Route::resource('suppliers.layups', CltLayupController::class);
     Route::resource('suppliers.layups.layers', CltLayerController::class);

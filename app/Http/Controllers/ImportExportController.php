@@ -151,4 +151,75 @@ class ImportExportController extends Controller
             }
         }
     }
+
+        /**
+     * Show conflict resolution page
+     */
+    public function showConflicts()
+    {
+        $conflicts   = session('import_conflicts');
+        $importData  = session('import_data');
+        $supplierId  = session('import_supplier_id');
+
+        if (!$conflicts || !$importData) {
+            return redirect()->route('suppliers.import.form')
+                ->with('error', 'No pending import found.');
+        }
+
+        $supplier = Supplier::findOrFail($supplierId);
+
+        return view('suppliers.conflicts', compact('conflicts', 'importData', 'supplier'));
+    }
+
+    /**
+     * Resolve conflicts and process import
+     */
+    public function resolveConflicts(Request $request)
+    {
+        $importData = session('import_data');
+        $supplierId = session('import_supplier_id');
+
+        if (!$importData || !$supplierId) {
+            return redirect()->route('suppliers.import.form')
+                ->with('error', 'No pending import found.');
+        }
+
+        $supplier   = Supplier::findOrFail($supplierId);
+        $resolutions = $request->input('resolutions', []);
+
+        foreach ($importData['layups'] as $layupData) {
+            $layup = $supplier->layups()->firstOrCreate(
+                ['name' => $layupData['name']]
+            );
+
+            foreach ($layupData['layers'] as $layerData) {
+                $existingLayer = $layup->layers()
+                    ->where('layer_order', $layerData['layer_order'])
+                    ->first();
+
+                if ($existingLayer) {
+                    // Buat key unik untuk tiap konflik
+                    $key = $layupData['name'] . '_' . $layerData['layer_order'];
+                    $resolution = $resolutions[$key] ?? 'keep';
+
+                    if ($resolution === 'incoming') {
+                        $existingLayer->update([
+                            'thickness' => $layerData['thickness'],
+                            'width'     => $layerData['width'],
+                            'angle'     => $layerData['angle'],
+                        ]);
+                    }
+                } else {
+                    $layup->layers()->create($layerData);
+                }
+            }
+        }
+
+        session()->forget(['import_conflicts', 'import_data', 'import_supplier_id']);
+
+        return redirect()->route('suppliers.index')
+            ->with('success', 'Import completed with conflict resolution!');
+    }
 }
+
+
