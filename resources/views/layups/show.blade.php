@@ -15,9 +15,9 @@
 
         <div class="flex justify-between items-center mb-4">
             <h3 class="text-lg font-medium">CLT Layers</h3>
-            <a href="#"
-               class="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700">
-                + Add Layer (Coming Soon)
+            <a href="{{ route('suppliers.layups.layers.create', [$supplier, $layup]) }}"
+            class="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700">
+                + Add Layer
             </a>
         </div>
 
