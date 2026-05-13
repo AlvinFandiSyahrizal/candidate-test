@@ -26,17 +26,17 @@ Route::middleware('auth')->group(function () {
 require __DIR__.'/auth.php';
 
 Route::middleware('auth')->group(function () {
+    Route::get('suppliers/import/conflicts', [ImportExportController::class, 'showConflicts'])
+        ->name('suppliers.import.conflicts');
+    Route::post('suppliers/import/resolve', [ImportExportController::class, 'resolveConflicts'])
+        ->name('suppliers.import.resolve');
     Route::get('suppliers/import', [ImportExportController::class, 'importForm'])
         ->name('suppliers.import.form');
     Route::post('suppliers/import', [ImportExportController::class, 'import'])
         ->name('suppliers.import');
+
     Route::get('suppliers/{supplier}/export', [ImportExportController::class, 'export'])
         ->name('suppliers.export');
-
-    Route::get('suppliers/import/conflicts', [ImportExportController::class, 'showConflicts'])
-    ->name('suppliers.import.conflicts');
-    Route::post('suppliers/import/resolve', [ImportExportController::class, 'resolveConflicts'])
-    ->name('suppliers.import.resolve');
 
     Route::resource('suppliers', SupplierController::class);
     Route::resource('suppliers.layups', CltLayupController::class);
