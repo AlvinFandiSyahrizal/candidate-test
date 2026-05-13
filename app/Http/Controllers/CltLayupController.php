@@ -2,63 +2,52 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
+use App\Models\Supplier;
+use App\Models\CltLayup;
+use App\Http\Requests\StoreCltLayupRequest;
 
 class CltLayupController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
+    public function index(Supplier $supplier)
     {
-        //
+        $layups = $supplier->layups()->withCount('layers')->latest()->paginate(10);
+        return view('layups.index', compact('supplier', 'layups'));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
+    public function create(Supplier $supplier)
     {
-        //
+        return view('layups.create', compact('supplier'));
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
+    public function store(StoreCltLayupRequest $request, Supplier $supplier)
     {
-        //
+        $supplier->layups()->create($request->validated());
+        return redirect()->route('suppliers.show', $supplier)
+            ->with('success', 'Layup created successfully.');
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
+    public function show(Supplier $supplier, CltLayup $layup)
     {
-        //
+        $layup->load('layers');
+        return view('layups.show', compact('supplier', 'layup'));
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
+    public function edit(Supplier $supplier, CltLayup $layup)
     {
-        //
+        return view('layups.edit', compact('supplier', 'layup'));
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
+    public function update(StoreCltLayupRequest $request, Supplier $supplier, CltLayup $layup)
     {
-        //
+        $layup->update($request->validated());
+        return redirect()->route('suppliers.show', $supplier)
+            ->with('success', 'Layup updated successfully.');
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
+    public function destroy(Supplier $supplier, CltLayup $layup)
     {
-        //
+        $layup->delete();
+        return redirect()->route('suppliers.show', $supplier)
+            ->with('success', 'Layup deleted successfully.');
     }
 }

@@ -1,13 +1,20 @@
 <x-app-layout>
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            {{ $supplier->name }}
+            {{ $supplier->name }} — Layups
         </h2>
     </x-slot>
 
     <div class="py-8 max-w-7xl mx-auto px-4">
+
+        @if(session('success'))
+            <div class="mb-4 p-4 bg-green-100 text-green-700 rounded">
+                {{ session('success') }}
+            </div>
+        @endif
+
         <div class="flex justify-between items-center mb-4">
-            <h3 class="text-lg font-medium">CLT Layups</h3>
+            <h3 class="text-lg font-medium">All Layups</h3>
             <a href="{{ route('suppliers.layups.create', $supplier) }}"
                class="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700">
                 + Add Layup
@@ -25,19 +32,19 @@
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-gray-100">
-                    @forelse($supplier->layups as $layup)
+                    @forelse($layups as $layup)
                     <tr class="hover:bg-gray-50">
                         <td class="px-4 py-3">{{ $loop->iteration }}</td>
                         <td class="px-4 py-3 font-medium">{{ $layup->name }}</td>
-                        <td class="px-4 py-3">{{ $layup->layers->count() }} layers</td>
+                        <td class="px-4 py-3">{{ $layup->layers_count }} layers</td>
                         <td class="px-4 py-3 flex gap-2">
                             <a href="{{ route('suppliers.layups.show', [$supplier, $layup]) }}"
-                            class="text-blue-600 hover:underline">View</a>
+                               class="text-blue-600 hover:underline">View</a>
                             <a href="{{ route('suppliers.layups.edit', [$supplier, $layup]) }}"
-                            class="text-yellow-600 hover:underline">Edit</a>
+                               class="text-yellow-600 hover:underline">Edit</a>
                             <form action="{{ route('suppliers.layups.destroy', [$supplier, $layup]) }}"
-                                method="POST"
-                                onsubmit="return confirm('Delete this layup?')">
+                                  method="POST"
+                                  onsubmit="return confirm('Delete this layup?')">
                                 @csrf @method('DELETE')
                                 <button class="text-red-600 hover:underline">Delete</button>
                             </form>
@@ -54,10 +61,10 @@
             </table>
         </div>
 
-        <div class="mt-4">
-            <a href="{{ route('suppliers.index') }}" class="text-gray-500 hover:underline">
-                ← Back to Suppliers
-            </a>
+        <div class="mt-4 flex justify-between items-center">
+            {{ $layups->links() }}
+            <a href="{{ route('suppliers.show', $supplier) }}"
+               class="text-gray-500 hover:underline">← Back to Supplier</a>
         </div>
     </div>
 </x-app-layout>

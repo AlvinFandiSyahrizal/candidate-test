@@ -3,6 +3,8 @@
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\SupplierController;
+use App\Http\Controllers\CltLayupController;
+
 
 
 Route::get('/', function () {
@@ -23,4 +25,5 @@ require __DIR__.'/auth.php';
 
 Route::middleware('auth')->group(function () {
     Route::resource('suppliers', SupplierController::class);
+    Route::resource('suppliers.layups', CltLayupController::class);
 });
