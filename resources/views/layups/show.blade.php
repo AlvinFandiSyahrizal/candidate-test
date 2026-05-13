@@ -39,8 +39,15 @@
                         <td class="px-4 py-3">{{ $layer->thickness }}</td>
                         <td class="px-4 py-3">{{ $layer->width }}</td>
                         <td class="px-4 py-3">{{ $layer->angle }}</td>
-                        <td class="px-4 py-3 text-gray-400 text-xs">
-                            Available in Phase 4
+                        <td class="px-4 py-3 flex gap-2">
+                            <a href="{{ route('suppliers.layups.layers.edit', [$supplier, $layup, $layer]) }}"
+                            class="text-yellow-600 hover:underline">Edit</a>
+                            <form action="{{ route('suppliers.layups.layers.destroy', [$supplier, $layup, $layer]) }}"
+                                method="POST"
+                                onsubmit="return confirm('Delete this layer?')">
+                                @csrf @method('DELETE')
+                                <button class="text-red-600 hover:underline">Delete</button>
+                            </form>
                         </td>
                     </tr>
                     @empty

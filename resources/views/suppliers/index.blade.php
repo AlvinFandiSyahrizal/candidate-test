@@ -13,10 +13,13 @@
             </div>
         @endif
 
-        <div class="flex justify-between items-center mb-4">
-            <h3 class="text-lg font-medium">All Suppliers</h3>
+        <div class="flex gap-2 items-center">
+            <a href="{{ route('suppliers.import.form') }}"
+            class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">
+                Import
+            </a>
             <a href="{{ route('suppliers.create') }}"
-               class="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700">
+            class="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700">
                 + Add Supplier
             </a>
         </div>
@@ -29,6 +32,7 @@
                         <th class="px-4 py-3 text-left">Name</th>
                         <th class="px-4 py-3 text-left">Layups</th>
                         <th class="px-4 py-3 text-left">Actions</th>
+
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-gray-100">
@@ -42,6 +46,8 @@
                                class="text-blue-600 hover:underline">View</a>
                             <a href="{{ route('suppliers.edit', $supplier) }}"
                                class="text-yellow-600 hover:underline">Edit</a>
+                               <a href="{{ route('suppliers.export', $supplier) }}"
+                                    class="text-green-600 hover:underline">Export</a>
                             <form action="{{ route('suppliers.destroy', $supplier) }}"
                                   method="POST"
                                   onsubmit="return confirm('Delete this supplier?')">

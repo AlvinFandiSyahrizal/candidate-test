@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\SupplierController;
 use App\Http\Controllers\CltLayupController;
 use App\Http\Controllers\CltLayerController;
+use App\Http\Controllers\ImportExportController;
 
 
 
@@ -25,7 +26,16 @@ Route::middleware('auth')->group(function () {
 require __DIR__.'/auth.php';
 
 Route::middleware('auth')->group(function () {
+    Route::get('suppliers/import', [ImportExportController::class, 'importForm'])
+        ->name('suppliers.import.form');
+    Route::post('suppliers/import', [ImportExportController::class, 'import'])
+        ->name('suppliers.import');
+    Route::get('suppliers/{supplier}/export', [ImportExportController::class, 'export'])
+        ->name('suppliers.export');
+
     Route::resource('suppliers', SupplierController::class);
     Route::resource('suppliers.layups', CltLayupController::class);
     Route::resource('suppliers.layups.layers', CltLayerController::class);
+
+
 });
